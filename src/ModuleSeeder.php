@@ -17,14 +17,16 @@ class ModuleSeeder
 
     public function run(): void
     {
-        $modules = config('module-manager.modules', []);
+        $raw = config('module-manager.modules', []);
 
-        if (empty($modules)) {
+        if (empty($raw)) {
             if ($this->command) {
                 $this->command->warn('No modules defined in config/module-manager.php [modules].');
             }
             return;
         }
+
+        $modules = $this->flattenModules($raw);
 
         $ordered = $this->orderByParent(array_keys($modules), $modules);
 
@@ -122,5 +124,43 @@ class ModuleSeeder
         }
 
         return $order;
+    }
+
+    /**
+     * Flatten nested module config (with "records" key) into a flat key => options array.
+     * Children inherit "group" and get "parent" set to the parent key.
+     *
+     * @param  array<string, mixed>  $nodes  Nested modules (each may have 'records' => [...])
+     * @param  string|null  $parentKey  Parent module key when recursing
+     * @param  array<string, mixed>  $parentOptions  Parent options for inheriting group
+     * @return array<string, array>
+     */
+    protected function flattenModules(array $nodes, ?string $parentKey = null, array $parentOptions = []): array
+    {
+        $flat = [];
+
+        foreach ($nodes as $key => $options) {
+            if (! is_array($options)) {
+                continue;
+            }
+
+            $records = $options['records'] ?? null;
+            if (isset($records) && is_array($records)) {
+                unset($options['records']);
+            }
+
+            $options['group'] = $options['group'] ?? $parentOptions['group'] ?? 'general';
+            if ($parentKey !== null) {
+                $options['parent'] = $parentKey;
+            }
+
+            $flat[$key] = $options;
+
+            if (isset($records) && is_array($records)) {
+                $flat = array_merge($flat, $this->flattenModules($records, $key, $options));
+            }
+        }
+
+        return $flat;
     }
 }

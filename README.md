@@ -2,6 +2,8 @@
 
 A module/feature-flag system for Laravel with dependency resolution, tree structure, system (locked) modules, and Laravel 10–12 support.
 
+For usage scenarios and examples in Persian (فارسی), see [سناریوهای کاربردی](docs/fa/usage-scenarios.md).
+
 ## Requirements
 
 - PHP 8.2+
@@ -40,7 +42,9 @@ Edit `config/module-manager.php`:
 
 ### Defining modules in config
 
-Add modules under `modules` so they can be synced with `php artisan module:sync`:
+Add modules under `modules` so they can be synced with `php artisan module:sync`. You can use a **nested** structure with `records`: children inherit `group` and get `parent` set automatically.
+
+**Nested (recommended):**
 
 ```php
 'modules' => [
@@ -51,23 +55,24 @@ Add modules under `modules` so they can be synced with `php artisan module:sync`
         'icon' => 'fa-box',
         'sort_order' => 0,
         'is_active' => false,
-        'is_system' => false,
-        'on_deactivate' => 'restrict',
-        'metadata' => [],
-        'parent' => null,
+        'on_deactivate' => 'cascade',
         'requires' => [],
-        'conflicts' => [],
-        'suggests' => [],
-    ],
-    'simple_product' => [
-        'name' => 'Simple Product',
-        'group' => 'shop',
-        'parent' => 'products',
-        'is_active' => true,
-        'requires' => ['products'],
+        'records' => [
+            'simple_product' => [
+                'name' => 'Simple Product',
+                'is_active' => true,
+                'requires' => ['products'],
+            ],
+            'variable_product' => [
+                'name' => 'Variable Product',
+                'requires' => ['products'],
+            ],
+        ],
     ],
 ],
 ```
+
+**Flat:** same keys at top level; set `group` and `parent` on each module.
 
 Sync from config:
 

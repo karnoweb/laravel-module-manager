@@ -61,19 +61,23 @@ return [
     | Modules Definition (Config-driven)
     |--------------------------------------------------------------------------
     | Define modules here. Run `php artisan module:sync` to create/update in database.
-    | Keys: key => [ name, description?, group?, icon?, sort_order?, is_active?, is_system?, on_deactivate?, metadata?, parent?, requires?, conflicts?, suggests? ]
+    |
+    | Flat: key => [ name, description?, group?, icon?, sort_order?, is_active?, is_system?, on_deactivate?, metadata?, parent?, requires?, conflicts?, suggests? ]
+    |
+    | Nested: use "records" to group children; they inherit "group" and get "parent" set automatically.
+    | Example:
+    |   'products' => [
+    |       'name' => 'Products',
+    |       'description' => 'Product management',
+    |       'group' => 'shop',
+    |       'on_deactivate' => 'cascade',
+    |       'records' => [
+    |           'simple_product' => [ 'name' => 'Simple Product', 'requires' => ['products'] ],
+    |           'variable_product' => [ 'name' => 'Variable Product', 'requires' => ['products'] ],
+    |       ],
+    |   ],
     */
     'modules' => [
-        // 'core' => [
-        //     'name' => 'Core',
-        //     'group' => 'general',
-        //     'is_active' => true,
-        //     'is_system' => true,
-        //     'parent' => null,
-        //     'requires' => [],
-        //     'conflicts' => [],
-        //     'suggests' => [],
-        // ],
         // 'products' => [
         //     'name' => 'Products',
         //     'description' => 'Product management',
@@ -81,20 +85,12 @@ return [
         //     'icon' => 'fa-box',
         //     'sort_order' => 0,
         //     'is_active' => false,
-        //     'is_system' => false,
-        //     'on_deactivate' => 'restrict',
-        //     'metadata' => [],
-        //     'parent' => null,
+        //     'on_deactivate' => 'cascade',
         //     'requires' => [],
-        //     'conflicts' => [],
-        //     'suggests' => [],
-        // ],
-        // 'simple_product' => [
-        //     'name' => 'Simple Product',
-        //     'group' => 'shop',
-        //     'parent' => 'products',
-        //     'is_active' => true,
-        //     'requires' => ['products'],
+        //     'records' => [
+        //         'simple_product' => [ 'name' => 'Simple Product', 'requires' => ['products'] ],
+        //         'variable_product' => [ 'name' => 'Variable Product', 'requires' => ['products'] ],
+        //     ],
         // ],
     ],
 ];
