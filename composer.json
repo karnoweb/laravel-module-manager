@@ -1,8 +1,13 @@
 {
     "name": "karnoweb/laravel-module-manager",
-    "version": "1.0.0",
     "description": "A powerful module management system for Laravel with dependency resolution, tree structure, and Laravel 12 support",
-    "keywords": ["laravel", "module", "feature-flag", "dependency", "module-manager"],
+    "keywords": [
+        "laravel",
+        "module",
+        "feature-flag",
+        "dependency",
+        "module-manager"
+    ],
     "license": "MIT",
     "authors": [
         {
@@ -42,6 +47,5 @@
             }
         }
     },
-    "minimum-stability": "dev",
     "prefer-stable": true
 }
