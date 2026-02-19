@@ -20,17 +20,13 @@ class ModuleSeeder
         $raw = config('module-manager.modules', []);
 
         if (empty($raw)) {
-            if ($this->command) {
-                $this->command->warn('No modules defined in config/module-manager.php [modules].');
-            }
+            $this->command?->warn('No modules defined in config/module-manager.php [modules].');
             return;
         }
 
         $modules = $this->flattenModules($raw);
 
-        $ordered = $this->orderByParent(array_keys($modules), $modules);
-
-        foreach ($ordered as $key) {
+        foreach ($this->orderByParent(array_keys($modules), $modules) as $key) {
             $options = $modules[$key];
             $name = $options['name'] ?? $key;
             $opts = [

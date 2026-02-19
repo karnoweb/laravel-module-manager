@@ -324,28 +324,36 @@ class ModuleManager implements ModuleManagerInterface
 
     // ==================== Management ====================
 
+    /**
+     * @throws ModuleNotFoundException
+     */
     public function define(string $key, string $name, array $options = []): Module
     {
         $parentId = null;
         if (isset($options['parent'])) {
-            $parent = $this->findOrFail($options['parent']);
-            $parentId = $parent->id;
+            $parentId = $this->findOrFail($options['parent'])->id;
+        }
+
+        $data = [
+            'parent_id' => $parentId,
+            'name' => $name,
+            'description' => $options['description'] ?? null,
+            'group' => $options['group'] ?? 'general',
+            'icon' => $options['icon'] ?? null,
+            'sort_order' => $options['sort_order'] ?? 0,
+            'is_active' => $options['is_active'] ?? false,
+            'is_system' => $options['is_system'] ?? false,
+            'metadata' => $options['metadata'] ?? null,
+            'on_deactivate' => $options['on_deactivate'] ?? config('module-manager.default_deactivation', 'restrict'),
+        ];
+
+        if ($data['is_system']){
+            $data['is_active'] = true;
         }
 
         $module = Module::updateOrCreate(
             ['key' => $key],
-            [
-                'parent_id' => $parentId,
-                'name' => $name,
-                'description' => $options['description'] ?? null,
-                'group' => $options['group'] ?? 'general',
-                'icon' => $options['icon'] ?? null,
-                'sort_order' => $options['sort_order'] ?? 0,
-                'is_active' => $options['is_active'] ?? false,
-                'is_system' => $options['is_system'] ?? false,
-                'metadata' => $options['metadata'] ?? null,
-                'on_deactivate' => $options['on_deactivate'] ?? config('module-manager.default_deactivation', 'restrict'),
-            ]
+            $data
         );
 
         $this->flushCache();
