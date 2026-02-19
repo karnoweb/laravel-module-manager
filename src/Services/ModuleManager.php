@@ -352,7 +352,7 @@ class ModuleManager implements ModuleManagerInterface
         }
 
         $module = Module::where('key', $key)->first();
-        if ($module) {
+        if (!$module) {
             $data['is_active'] = $options['is_active'] ?? false;
             $module = Module::create($data);
         }else{
