@@ -341,7 +341,6 @@ class ModuleManager implements ModuleManagerInterface
             'group' => $options['group'] ?? 'general',
             'icon' => $options['icon'] ?? null,
             'sort_order' => $options['sort_order'] ?? 0,
-            'is_active' => $options['is_active'] ?? false,
             'is_system' => $options['is_system'] ?? false,
             'metadata' => $options['metadata'] ?? null,
             'on_deactivate' => $options['on_deactivate'] ?? config('module-manager.default_deactivation', 'restrict'),
@@ -351,10 +350,13 @@ class ModuleManager implements ModuleManagerInterface
             $data['is_active'] = true;
         }
 
-        $module = Module::updateOrCreate(
-            ['key' => $key],
-            $data
-        );
+        $module = Module::where('key', $key)->first();
+        if ($module) {
+            $data['is_active'] = $options['is_active'] ?? false;
+            $module = Module::create($data);
+        }else{
+            $module->update($data);
+        }
 
         $this->flushCache();
         return $module;
