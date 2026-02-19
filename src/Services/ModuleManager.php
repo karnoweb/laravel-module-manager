@@ -335,6 +335,7 @@ class ModuleManager implements ModuleManagerInterface
         }
 
         $data = [
+            'key' => $key,
             'parent_id' => $parentId,
             'name' => $name,
             'description' => $options['description'] ?? null,
