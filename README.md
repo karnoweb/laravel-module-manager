@@ -1,18 +1,22 @@
 # Laravel Module Manager
 
-A module/feature-flag system for Laravel with dependency resolution, tree structure, system (locked) modules, and Laravel 10–12 support.
+A module/feature-flag system for Laravel with dependency resolution, tree structure, system (locked) modules, and Laravel 13 support.
 
 For usage scenarios and examples in Persian (فارسی), see [سناریوهای کاربردی](docs/fa/usage-scenarios.md).
 
 ## Requirements
 
-- PHP 8.2+
-- Laravel 10.x, 11.x or 12.x
+- PHP 8.3+
+- Laravel 13.x
 
 ## Installation
 
 ```bash
-composer require karnoweb/laravel-module-manager
+# Laravel 13
+composer require karnoweb/laravel-module-manager:^13.0
+
+# Laravel 10–12
+composer require karnoweb/laravel-module-manager:^1.0
 ```
 
 Publish config and migrations:
